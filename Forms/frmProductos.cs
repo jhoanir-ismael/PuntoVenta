@@ -76,7 +76,7 @@ namespace Punto.Forms
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("Producto registrado correctamente", "Exitoso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     
-                    //Limpiarformulario();
+                    Limpiarformulario();
                     Cargardatos();
                 }
                 catch (Exception ex)
@@ -143,7 +143,7 @@ namespace Punto.Forms
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("Producto actualizado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    //Limpiarformulario();
+                    Limpiarformulario();
                     Cargardatos();
                 }
                 catch (Exception ex)
@@ -158,7 +158,54 @@ namespace Punto.Forms
 
         }
         //eliminar
+        private void btnEliminar_Click(object sender, EventArgs e)
+        {
+            if (idProductoseleccionado == 0)
+            {
+                MessageBox.Show("Seleccione el producto que desea eliminar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
 
+            }
+            DialogResult confirmacion = MessageBox.Show("Desea eliminar este producto?", "Confirmar acción", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirmacion == DialogResult.Yes)
+            {
+                Conexion db = new Conexion();
+                MySqlConnection con = db.ObtenerConexionAbierta();
 
+                if (con != null && con.State == ConnectionState.Open)
+                {
+                    try
+                    {
+                        string query = "DELETE FROM productos WHERE producto_id = @id";
+                        MySqlCommand cmd = new MySqlCommand(query, con);
+                        cmd.Parameters.AddWithValue("@id", idProductoseleccionado);
+
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("El producto ha sido removido.", "Eliminado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        Limpiarformulario();
+                        Cargardatos();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al intentar eliminar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    finally
+                    {
+                        con.Close();
+                    }
+
+                }
+            }
+
+        }
+        private void Limpiarformulario()
+        {
+            txtNombre.Clear();
+            txtPrecio.Clear();
+            txtStock.Clear();
+            cmbCategorias.Text = "";
+            idProductoseleccionado = 0;
+        }
     }
 }
