@@ -26,7 +26,7 @@ namespace Punto.Forms
             {
                 try
                 {
-                    string query = "SELEC productos_id, codigo, descripcion, precio, stock FROM productos";
+                    string query = "SELECT producto_id, codigo, descripcion, precio, stock FROM productos";
                     MySqlDataAdapter adapter = new MySqlDataAdapter(query, con);
                     DataTable tablaproductos = new DataTable();
                     adapter.Fill(tablaproductos);
@@ -67,17 +67,16 @@ namespace Punto.Forms
             {
                 try
                 {
-                    string query = "INSERT INTO productos (codigo, descripcion, precio, stock) VALUES (@codigo, @desc, @precio, @stock)";
+                    string query = "SELECT producto_id, codigo, descripcion, precio, stock FROM productos";
                     MySqlCommand cmd = new MySqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@codigo", txtNombre.Text);
-                    cmd.Parameters.AddWithValue("@desc", cmbCategorias.Text);
+                    cmd.Parameters.AddWithValue("@codigo", txtCodigo.Text);
+                    cmd.Parameters.AddWithValue("@desc", txtNombre.Text);
                     cmd.Parameters.AddWithValue("@precio", preciovalido);
                     cmd.Parameters.AddWithValue("@stock", stockvalido);
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("Producto registrado correctamente", "Exitoso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     
-                    Limpiarformulario();
-                    Cargardatos();
+                    
                 }
                 catch (Exception ex)
                 {
@@ -87,25 +86,26 @@ namespace Punto.Forms
                 {
                     con.Close();
                 }
-
+                Limpiarformulario();
+                Cargardatos();
             }
         }
 
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvProductos_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow fila = dgvProductos.Rows[e.RowIndex];
                 string idString = fila.Cells["producto_id"].Value.ToString();
-                string nombre = fila.Cells["codigo"].Value.ToString();
-                string categoria = fila.Cells["descripcion"].Value.ToString();
+                string codigo = fila.Cells["codigo"].Value.ToString();
+                string descripcion = fila.Cells["descripcion"].Value.ToString();
                 string precio = fila.Cells["precio"].Value.ToString();
                 string stock = fila.Cells["stock"].Value.ToString();
                 idProductoseleccionado = Convert.ToInt32(idString);
-                txtNombre.Text = nombre;
-                txtPrecio.Text = precio;
-                txtStock.Text = stock;
-                cmbCategorias.Text = categoria;
+                txtCodigo.Text = codigo;
+                txtNombre.Text = descripcion;    
+                txtPrecio.Text = precio;         
+                txtStock.Text = stock;           
             }
         }
         //editar
@@ -134,8 +134,8 @@ namespace Punto.Forms
                     string query = "UPDATE productos SET codigo = @codigo, descripcion = @desc, precio = @precio, stock = @stock WHERE producto_id = @id";
                     MySqlCommand cmd = new MySqlCommand(query, con);
 
-                    cmd.Parameters.AddWithValue("@codigo", txtNombre.Text);
-                    cmd.Parameters.AddWithValue("@desc", cmbCategorias.Text);
+                    cmd.Parameters.AddWithValue("@codigo", txtCodigo.Text);
+                    cmd.Parameters.AddWithValue("@desc", txtNombre.Text);
                     cmd.Parameters.AddWithValue("@precio", preciovalido);
                     cmd.Parameters.AddWithValue("@stock", stockvalido);
                     cmd.Parameters.AddWithValue("@id", idProductoseleccionado);

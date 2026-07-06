@@ -15,16 +15,19 @@ namespace Punto
 
         public MySqlConnection ObtenerConexionAbierta()
         {
+            
+            string cadenaConexion = "Server=localhost;Database=puntodb;Uid=root;Pwd=;Port=3306;SslMode=Disabled;";
             MySqlConnection conexion = new MySqlConnection(cadenaConexion);
+
             try
             {
                 conexion.Open();
-                return conexion;
+                return conexion; 
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al conectar a la base de datos: " + ex.Message, "Error de conexión", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
+                MessageBox.Show("Error crítico al conectar a MySQL: " + ex.Message, "Error de Conexión", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null; 
             }
         }
     }
